@@ -1,0 +1,56 @@
+- name: Deploy API and Configure Nginx
+  hosts: all
+  become: yes
+  vars:
+    docker_image: "artanisplays/my-health-api-py:v1"
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Docker and Nginx
+      apt:
+        name: 
+          - docker.io
+          - nginx
+        state: present
+
+    - name: Ensure Docker is running
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Pull the API Docker image
+      command: docker pull {{ docker_image }}
+
+    - name: Run the API container on internal port 9000
+      command: >
+        docker run -d 
+        --name my-health-api 
+        -p 9000:8080 
+        --restart unless-stopped
+        {{ docker_image }}
+
+    - name: Deploy Nginx reverse proxy template
+      template:
+        src: api.conf.j2
+        dest: /etc/nginx/sites-available/api.conf
+
+    - name: Enable the Nginx configuration
+      file:
+        src: /etc/nginx/sites-available/api.conf
+        dest: /etc/nginx/sites-enabled/api.conf
+        state: link
+
+    - name: Remove the default Nginx configuration
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Restart Nginx to apply changes
+      systemd:
+        name: nginx
+        state: restarted
+        enabled: yes
