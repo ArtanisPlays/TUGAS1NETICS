@@ -90,6 +90,9 @@ I then upload it to artanisplays/my-health-api-py:v1 in the dockerhub
 ```
 docker push artanisplays/my-health-api-py:v1
 ```
+
+<img width="1046" height="119" alt="image" src="https://github.com/user-attachments/assets/d3577c57-2a33-41d5-a2c4-2bcc230807d7" />
+
 ## SOAL 2
 ```
 Lakukan deployment API tersebut di dalam container pada VPS publik. Gunakan port selain 80 dan 443 untuk menjalankan API.
@@ -313,3 +316,5 @@ This is the terraform code to get the azure vm working, starting from location, 
 ```
 This is the .yml for the Ansible, I believe the names are self-explanatory.
 The code is meant to download and set up a new fresh linux vm automatically
+
+Also this entire thing is done with the help of Gemini
